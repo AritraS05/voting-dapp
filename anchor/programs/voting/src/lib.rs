@@ -22,8 +22,21 @@ pub mod votingdapp {
         poll.candidate_amount = 0;
         Ok(())
     }
-}
 
+    pub fn initialize_candidate(ctx: Context<InitializeCandidate>,
+                                                _poll_id: u64,
+                                                candidate_name: String
+                                                )-> Result<()>{
+        Ok(())
+    }
+}
+#[account]
+#[derive(InitSpace)]
+pub struct Candidate{
+    #(max_len(32))
+    pub candidate_name: String,
+    pub candidate_votes: u64,
+}
 #[derive(Accounts)]
 #[instruction(poll_id: u64)]
 pub struct InitializePoll<'info> {
@@ -41,6 +54,31 @@ pub struct InitializePoll<'info> {
 
     pub system_program: Program<'info, System>,
 }
+
+#[derive(Accounts)]
+#[instruction(poll_id: u64, candidate_name: String)]
+pub struct InitializeCandidate<'info> {
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    #[account(
+        seeds = [poll_id.to_le_bytes().as_ref()],
+        bump,
+    )]
+    pub poll: Account<'info, Poll>,
+
+    #[account(
+        init,
+        payer = signer,
+        space = 8 + Candidate::INIT_SPACE,
+        seeds = [poll_id.to_le_bytes().as_ref(),candidate_name.to_le_bytes().as_ref()],
+        bump,
+    )]
+    pub candidate: Account<'info, Candidate>,
+    pub system_program: Program<'info, System>,
+}
+
+
 
 #[account]
 #[derive(InitSpace)]
