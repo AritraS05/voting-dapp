@@ -2,7 +2,7 @@
 import { AnchorProvider, Program } from '@coral-xyz/anchor'
 import { Cluster, PublicKey } from '@solana/web3.js'
 import VotingdappIDL from '../target/idl/votingdapp.json'
-import type { Votingdapp } from '../target/types/votingdapp'
+import type { Votingdapp } from '../target/types/voting'
 
 // Re-export the generated IDL and type
 export { Votingdapp, VotingdappIDL }
